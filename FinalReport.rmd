@@ -1,6 +1,6 @@
 ---
-title: "Aides Drug"
-author: "Put your name here!"
+title: "Alcohol V Seat Choice"
+author: "Leah Castro"
 date: "put the date here"
 output: html_document
 ---
@@ -16,10 +16,17 @@ triUmp <-read.csv(file="triUmpsal.csv",header=TRUE)
 <!--In this section you explain what you are trying to show.  Where did the data come from?  What is the research or other question you are trying to answer?.  If you skimp in this section expect to be marked down in your grade. Paint a picture of the project a couple of paragraphs is expected!-->
 
 A new  preventative aides drug (triUmpsal) is under test in clinical trials. Consider only the females, does this drug seem effective?  Hint - use dplyr to obtain that subpopulation with the filter command.
+```{r}
+onlyfemales = select(triUmp, c(treatment, infected, gender)) %>%
+  filter(gender == "F")
+```
+
 
 # Methods
 
 <!--Decide on your methods:  use "variable analysis" or other appropriate descriptors.  Make sure to choose at least one graphical method and at least one numerical method. Discuss what data manipulations may be needed for example subsetting or other binning procedures and what sort of graphical displays and inferential tools will be used!-->
+
+The data was filtered to include only females. Both bar charts and tables were used to compare infection rtes between the drug and the placebo. Chi square test was then used to decided if there was a significant relationship between treatment and infection status. 
 
 # Results
 
@@ -30,16 +37,37 @@ A new  preventative aides drug (triUmpsal) is under test in clinical trials. Con
 ### Graphical Descriptive Results
 
 <!--Graphical results here.  Make sure to show your code.  Provide appropriate labels for axes, giving units if possible, and provide a good title for the graph, too.  Use the graphical results to describe the patterns if any that exist in the data as focused toward the research question. Bottom line is to explain the features of the graph that are relevant to conforming or departing to what is expected by your null hypothesis !-->
+```{r}
+barchartGC(~infected+treatment,data=onlyfemales)
+barchartGC(~infected+treatment,data=onlyfemales, type="percent")
+```
+
+The bar chart suggests that a larger portion of females in the placeboo group stayed uninfected compared to those receiving the drug. The percentage of females who became infected were higher in the drug group than in the placebo group. This te;;s us that the drug may not be effective at preventing AIDS. 
 
 ### Numerical Descriptive Results
 
 <!--Numerical results go here. Use the numerical results to describe the patterns if any that exist in the data as focused toward the research question!-->
 
+```{r}
+table1 <-xtabs(~infected+treatment, data=onlyfemales)
+rowPerc(table1)
+colPerc(table1)
+```
+
+3.69 percent of females taking the drug became infected with AIDS while 96.31 remained uninfected. 2.42 percent of women taking the placebo were infected and 97.58 percent remained uninfected. This suggests that the females recieving the placebo expereicned a lower infection rate than those recieving the drug. 
+
 ## Inferential Results
 
 <!--State hypothesis clearly.  Make sure your discussion of the inferential test covers all the aspects that the test output produces, such as test statistic, p-value etc.  Make a decision about the null hypothesis, explain the assumptions on which the selected test/procedure was based, and why the chosen procedure satisfys the assumptions and is appropriate to answer the research question!-->
 
+```{r}
+chisq.test(table1)
+chisqtestGC(table1)
+```
+The test above tells us the p-value is 0.00007686. Since this is less than 0.05 we can reject the null hypothesis.
 
 # Discussion and Conclusion
 
 <!--Discussion and conclusion here.  If you found a relationship be sure to consider whether the relationship occurs because one of the variavbles causes the other, or whether they perhasps are related for some other reason.  Watch the chapter 6 videos from the GeorgeTown videos collection.!-->
+
+The results told us that in the data triUmpsal drug is not effective at preventing AIDS infection among female particiapnts. In fact, the infection rate was higher in those taking the drugs than those taking the placebo. The chi-squared test told us the p-value which confirmed that there is a statistical difference. This leads us to reject the null hypothesis and conclude that there is a relationship between treatment and infection status. The data tells us there is no benefit to the drug in terms of preventing AIDS.
